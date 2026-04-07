@@ -40,3 +40,11 @@ Later:
 - fast-paced shooter preference vs cozy-only preference
 - age preference mismatch
 - emotional intensity mismatch
+
+
+
+#### Games extraction and stance extraction
+
+Two step process:
+1. Identify entity names (games, genres)
+2. Label stance for each game and genre

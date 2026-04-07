@@ -1,0 +1,24 @@
+Extract all explicitly mentioned games from this intro and classify the user's stance toward each one.
+
+Return ONLY valid JSON:
+{
+  "games": [
+    {
+      "name": "string",
+      "stance": "currently_plays|likes|dislikes|avoids|used_to_play|open_to_try|wants_to_play|burned_out_on"
+    }
+  ]
+}
+
+Rules:
+- Include only explicitly mentioned games
+- Use the exact game name as written when possible
+- If the user says they do not like or do not play a game, mark it as dislikes or avoids
+- If they used to play it, mark used_to_play
+- If they are willing to try it, mark open_to_try
+- Do not infer games that are not explicitly mentioned
+
+Intro:
+"""
+{USER_TEXT}
+"""
