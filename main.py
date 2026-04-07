@@ -1,9 +1,59 @@
 import requests
 import json
 import re
+import csv
 
 OLLAMA_URL = "http://localhost:11434/api/generate"
 MODEL = "phi3:mini"
+
+def load_prompt(prompt_type: str) -> str:
+    """
+    Load prompt template from file.
+    
+    Args:
+        prompt_type: Type of prompt (e.g., 'games', 'genre', 'personality')
+    
+    Returns:
+        Prompt template string with {USER_TEXT} placeholder
+    
+    Raises:
+        FileNotFoundError: If prompt file doesn't exist
+    """
+    filename = f"{prompt_type}_only_prompt.txt"
+    with open(filename, 'r', encoding='utf-8') as f:
+        return f.read().strip()
+
+def load_csv_data(filename: str, n: int = 10, column: str = "introduction content") -> list:
+    """
+    Load first N records from CSV and extract specified column.
+    
+    Args:
+        filename: CSV file path
+        n: Number of records to load (default: 10)
+        column: Column name to extract (default: "introduction content")
+    
+    Returns:
+        List of strings from the specified column
+    
+    Notes:
+        - Handles UTF-8 with BOM
+        - Skips header row automatically
+    """
+    results = []
+    
+    with open(filename, 'r', encoding='utf-8-sig') as f:  # utf-8-sig handles BOM
+        reader = csv.DictReader(f)
+        
+        for i, row in enumerate(reader):
+            if i >= n:
+                break
+            
+            if column in row:
+                results.append(row[column])
+            else:
+                raise KeyError(f"Column '{column}' not found in CSV. Available: {list(row.keys())}")
+    
+    return results
 
 def clean_json_output(raw: str) -> str:
     raw = raw.strip()
@@ -78,32 +128,43 @@ def normalize_profile(data: dict) -> dict:
     return profile
 
 
-
-def extract_profile(text):
-    prompt = get_prompt(text)
-
+def extract_profile_with_prompt(prompt: str):
+    """
+    Send prompt to LLM and parse response.
+    """
     response = requests.post(
         OLLAMA_URL,
         json={"model": MODEL, "prompt": prompt, "stream": False}
     )
-    print("Prompt:", prompt)
-
-    raw = response.json()["response"]
-    print("Raw response:", raw)
     
-    cleaned = clean_json_output(raw)
+    raw = response.json()["response"]
+    print(f"Raw response: {raw}")
+    # cleaned = clean_json_output(raw)
+    
+    # try:
+    #     parsed = json.loads(cleaned)
+    #     return normalize_profile(parsed)
+    # except Exception as e:
+    #     print(f"Parse error: {e}")
+    #     print(f"Raw: {raw[:200]}")
+    #     print(f"Cleaned: {cleaned[:200]}")
+    #     return normalize_profile({})
 
-    try:
-        parsed = json.loads(cleaned)
-        return normalize_profile(parsed)
-    except Exception as e:
-        print("Parse error:", raw)
-        print("Cleaned:", cleaned)
-        print("Exception:", e)
-        return normalize_profile({})
-
-def get_prompt(text):
-    prompt = f"""
+def get_prompt(prompt_type: str, user_text: str) -> str:
+    """
+    Create final prompt by loading template and inserting user text.
+    
+    Args:
+        prompt_type: Type of prompt to load (e.g., 'games', 'genre', 'personality')
+                    Use 'default' for old hardcoded prompt
+        user_text: User introduction text to analyze
+    
+    Returns:
+        Complete prompt ready for LLM
+    """
+    if prompt_type == "default":
+        # Legacy hardcoded prompt for backward compatibility
+        return f"""
 Extract structured data from this gaming intro.
 
 Return ONLY valid JSON.
@@ -134,10 +195,12 @@ Required schema:
 If unknown, use null, false, or [].
 
 Intro:
-\"\"\"{text}\"\"\"
+\"\"\"{user_text}\"\"\"
 """
-
-    return prompt
+    else:
+        # Load from file
+        template = load_prompt(prompt_type)
+        return template.replace("{USER_TEXT}", user_text)
 
 def compute_features(p1, p2):
     return {
@@ -193,8 +256,44 @@ def run_pair(text1, text2):
     print("Features:", features)
 
 
-# 🔥 TEST DATA (replace later)
-text1 = "I like chill co-op games like BG3 and Minecraft. EST timezone."
-text2 = "Looking for long term friends, mostly play Helldivers and BG3. EST."
+def main():
+    """
+    Main pipeline: Load CSV data and process with LLM.
+    """
+    print("=== Starting main pipeline ===\n")
+    
+    # Load CSV data
+    try:
+        intro_texts = load_csv_data("prompt_data.csv", n=1, column="introduction content")
+        print(f"✓ Loaded {len(intro_texts)} introductions from CSV\n")
+    except Exception as e:
+        print(f"✗ Error loading CSV: {e}")
+        return
+    
+    # Process each introduction
+    for i, text in enumerate(intro_texts, start=1):
+        print(f"\n--- Processing intro {i}/{len(intro_texts)} ---")
+        print(f"Text preview: {text[:100]}...")
+        
+        # Create prompt using 'games' type
+        try:
+            prompt = get_prompt("games", text)
+            print(f"✓ Prompt created (length: {len(prompt)} chars)")
+        except Exception as e:
+            print(f"✗ Error creating prompt: {e}")
+            continue
+        
+        # Send to LLM
+        try:
+            profile = extract_profile_with_prompt(prompt)
+            print(f"✓ Extracted profile: {profile}")
+            # print("LLM extraction process is commented for now")
+        except Exception as e:
+            print(f"✗ Error extracting profile: {e}")
+            continue
+    
+    print("\n=== Pipeline complete ===")
 
-run_pair(text1, text2)
+
+if __name__ == "__main__":
+    main()
