@@ -1,0 +1,24 @@
+Extract personality traits from this gaming intro.
+
+Return ONLY valid JSON:
+{
+  "chill": true or false or null,
+  "energy_level": "low" or "medium" or "high" or null,
+  "introverted": true or false or null
+}
+
+Rules:
+- chill = true if user describes themselves as chill, relaxed, easygoing
+- energy_level:
+  - low = quiet, calm, reserved
+  - medium = balanced
+  - high = energetic, loud, excitable
+- introverted = true if user mentions being shy, introverted, or socially reserved
+- If unclear, use null
+- Do NOT over-interpret
+
+Intro:
+"""
+I'm David, I love to play survival games, RPG's, shooters, and cooperative party games. I just turned 29, I'm from Mexico my time zone is UTC/GMT -6. I play on PC. I'm recently more hooked into CS2, but I want to find someone to play survival and open world games. DM if you're interested. I'm chill but competitive if the other persons agree to.
+My ideal time to play is around 7 PM to 12 PM UTC/GMT -6, but I can stretch it more on weekends.
+"""

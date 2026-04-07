@@ -1,0 +1,21 @@
+Extract social preferences from this gaming intro.
+
+Return ONLY valid JSON:
+{
+  "wants_long_term": true or false or null,
+  "wants_group": true or false or null,
+  "open_to_chat": true or false or null
+}
+
+Rules:
+- wants_long_term = true if user mentions long-term friends or consistent group
+- wants_group = true if user prefers groups over 1-on-1
+- open_to_chat = true if user is open to chatting, hanging out, or non-gaming interaction
+- If unclear, use null
+- Be conservative
+
+Intro:
+"""
+I'm David, I love to play survival games, RPG's, shooters, and cooperative party games. I just turned 29, I'm from Mexico my time zone is UTC/GMT -6. I play on PC. I'm recently more hooked into CS2, but I want to find someone to play survival and open world games. DM if you're interested. I'm chill but competitive if the other persons agree to.
+My ideal time to play is around 7 PM to 12 PM UTC/GMT -6, but I can stretch it more on weekends.
+"""

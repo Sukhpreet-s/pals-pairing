@@ -80,6 +80,29 @@ def normalize_profile(data: dict) -> dict:
 
 
 def extract_profile(text):
+    prompt = get_prompt(text)
+
+    response = requests.post(
+        OLLAMA_URL,
+        json={"model": MODEL, "prompt": prompt, "stream": False}
+    )
+    print("Prompt:", prompt)
+
+    raw = response.json()["response"]
+    print("Raw response:", raw)
+    
+    cleaned = clean_json_output(raw)
+
+    try:
+        parsed = json.loads(cleaned)
+        return normalize_profile(parsed)
+    except Exception as e:
+        print("Parse error:", raw)
+        print("Cleaned:", cleaned)
+        print("Exception:", e)
+        return normalize_profile({})
+
+def get_prompt(text):
     prompt = f"""
 Extract structured data from this gaming intro.
 
@@ -114,22 +137,7 @@ Intro:
 \"\"\"{text}\"\"\"
 """
 
-    response = requests.post(
-        OLLAMA_URL,
-        json={"model": MODEL, "prompt": prompt, "stream": False}
-    )
-
-    raw = response.json()["response"]
-    cleaned = clean_json_output(raw)
-
-    try:
-        parsed = json.loads(cleaned)
-        return normalize_profile(parsed)
-    except Exception as e:
-        print("Parse error:", raw)
-        print("Cleaned:", cleaned)
-        print("Exception:", e)
-        return normalize_profile({})
+    return prompt
 
 def compute_features(p1, p2):
     return {
