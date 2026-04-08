@@ -5,7 +5,7 @@ Return ONLY valid JSON as per the following structure:
   "games": [
     {
       "name": "string",
-      "stance": "currently_plays|likes|dislikes|used_to_play|open_to_try|wants_to_play|burned_out_on"
+      "stance": "currently_plays|likes|dislikes|used_to_play|open_to_try|wants_to_play"
     }
   ]
 }
