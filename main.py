@@ -23,38 +23,6 @@ def load_prompt(prompt_type: str) -> str:
     with open(filename, 'r', encoding='utf-8') as f:
         return f.read().strip()
 
-def load_csv_data(filename: str, n: int = 10, column: str = "introduction content") -> list:
-    """
-    Load first N records from CSV and extract specified column.
-    
-    Args:
-        filename: CSV file path
-        n: Number of records to load (default: 10)
-        column: Column name to extract (default: "introduction content")
-    
-    Returns:
-        List of strings from the specified column
-    
-    Notes:
-        - Handles UTF-8 with BOM
-        - Skips header row automatically
-    """
-    results = []
-    
-    with open(filename, 'r', encoding='utf-8-sig') as f:  # utf-8-sig handles BOM
-        reader = csv.DictReader(f)
-        
-        for i, row in enumerate(reader):
-            if i >= n:
-                break
-            
-            if column in row:
-                results.append(row[column])
-            else:
-                raise KeyError(f"Column '{column}' not found in CSV. Available: {list(row.keys())}")
-    
-    return results
-
 def flatten_games(games_json):
     """
     Flatten games array into stance-grouped dict.
@@ -330,26 +298,6 @@ def extract_profile_with_prompt(prompt: str):
     #     print(f"Cleaned: {cleaned[:200]}")
     #     return normalize_profile({})
 
-def get_prompt(prompt_type: str, user_text: str) -> str:
-    """
-    Create final prompt by loading template and inserting user text.
-    
-    Args:
-        prompt_type: Type of prompt to load (e.g., 'games', 'genre', 'personality')
-                    Use 'default' for old hardcoded prompt
-        user_text: User introduction text to analyze
-    
-    Returns:
-        Complete prompt ready for LLM
-
-    Raises:
-        FileNotFoundError: If prompt file doesn't exist
-    """
-
-    # Load from file
-    template = load_prompt(prompt_type)
-    return template.replace("{USER_TEXT}", user_text)
-
 def compute_features(p1, p2):
     return {
         "shared_games": len(set(p1.get("games", [])) & set(p2.get("games", []))),
@@ -391,44 +339,6 @@ def compute_score(f):
         score += 0.5
 
     return max(0, min(10, score))
-
-def main():
-    """
-    Main pipeline: Load CSV data and process with LLM.
-    """
-    print("=== Starting main pipeline ===\n")
-    
-    # Load CSV data
-    try:
-        intro_texts = load_csv_data("prompt_data.csv", n=1, column="introduction content")
-        print(f"✓ Loaded {len(intro_texts)} introductions from CSV\n")
-    except Exception as e:
-        print(f"✗ Error loading CSV: {e}")
-        return
-    
-    # Process each introduction
-    for i, text in enumerate(intro_texts, start=1):
-        print(f"\n--- Processing intro {i}/{len(intro_texts)} ---")
-        print(f"Text preview: {text[:100]}...")
-        
-        # Create prompt using 'games' type
-        try:
-            prompt = get_prompt("games", text)
-            print(f"✓ Prompt created (length: {len(prompt)} chars)")
-        except Exception as e:
-            print(f"✗ Error creating prompt: {e}")
-            continue
-        
-        # Send to LLM
-        try:
-            profile = extract_profile_with_prompt(prompt)
-            print(f"✓ Extracted profile: {profile}")
-            # print("LLM extraction process is commented for now")
-        except Exception as e:
-            print(f"✗ Error extracting profile: {e}")
-            continue
-    
-    print("\n=== Pipeline complete ===")
 
 def extract_profiles_pipeline():
     """
@@ -498,5 +408,3 @@ def extract_profiles_pipeline():
 if __name__ == "__main__":
     # Run the extraction pipeline
     extract_profiles_pipeline()
-if __name__ == "__main__":
-    main()
