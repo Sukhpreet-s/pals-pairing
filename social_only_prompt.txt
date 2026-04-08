@@ -1,13 +1,13 @@
-Extract social preferences from this gaming intro.
+Extract social preferences from this gaming introduction post according to the below JSON structure.
 
-Return ONLY valid JSON:
+Return ONLY valid JSON as per the following structure:
 {
   "wants_long_term": true or false or null,
   "wants_group": true or false or null,
   "open_to_chat": true or false or null
 }
 
-Rules:
+Follow these rules strictly:
 - wants_long_term = true if user mentions long-term friends or consistent group
 - wants_group = true if user prefers groups over 1-on-1
 - open_to_chat = true if user is open to chatting, hanging out, or non-gaming interaction

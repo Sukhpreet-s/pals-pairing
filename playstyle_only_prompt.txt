@@ -1,13 +1,13 @@
-Extract playstyle preferences from this gaming intro.
+Extract playstyle preferences from this gaming introduction post according to the below JSON structure.
 
-Return ONLY valid JSON:
+Return ONLY valid JSON as per the following structure:
 {
   "cooperative": true or false or null,
   "competitive": true or false or null,
   "casual_chill": true or false or null
 }
 
-Rules:
+Follow these rules strictly:
 - cooperative = true if user prefers co-op, teamwork, PvE
 - competitive = true if user enjoys ranked, PvP, or competition
 - casual_chill = true if user emphasizes relaxing, chill, low-pressure play

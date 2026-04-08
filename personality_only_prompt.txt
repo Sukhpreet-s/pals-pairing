@@ -1,13 +1,13 @@
 Extract personality traits from this gaming intro.
 
-Return ONLY valid JSON:
+Return ONLY valid JSON as per the following structure:
 {
   "chill": true or false or null,
   "energy_level": "low" or "medium" or "high" or null,
   "introverted": true or false or null
 }
 
-Rules:
+Follow these rules strictly:
 - chill = true if user describes themselves as chill, relaxed, easygoing
 - energy_level:
   - low = quiet, calm, reserved

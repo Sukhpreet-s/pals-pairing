@@ -1,0 +1,33 @@
+Extract genre preferences from this gaming introduction post according to the JSON structure.
+
+Return ONLY valid JSON as per the following structure:
+{
+  "genres": [
+    {
+      "name": "string",
+      "stance": "likes|dislikes|avoids|open_to_try|unknown",
+      "source": "explicit|inferred",
+      "inferred_from_games": ["string"]
+    }
+  ]
+}
+
+Follow these rules strictly:
+- Extract genres explicitly mentioned 
+- Also infer genres from explicitly mentioned games if clear
+- If a genre is explicit, set source = "explicit" and inferred_from_games = []
+- If inferred, include the game names used for inference
+- Be conservative. If unsure, avoid inference.
+- Use only a single value for a stance for each game
+
+Eligible Stance labels rules:
+- likes : user clearly enjoys
+- dislikes : user does not enjoy but may still play
+- avoids : user refuses or avoids
+- open_to_try : willing but not explicitly interested
+- unknown : unclear
+
+Intro:
+"""
+{USER_TEXT}
+"""
