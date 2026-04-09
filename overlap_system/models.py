@@ -28,11 +28,9 @@ class UserProfile(TypedDict):
 class PairOverlapResult(TypedDict):
     raw_features: dict[str, Any]
     score: float
-    confidence: float
 
 
 class AggregateOverlapResult(TypedDict):
     overall_overlap_score: float
     domain_scores: dict[str, float]
-    domain_confidence: dict[str, float]
     raw_features: dict[str, Any]

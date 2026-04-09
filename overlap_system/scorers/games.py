@@ -1,6 +1,6 @@
 from ..config import GAME_WEIGHTS
 from ..models import PairOverlapResult, UserProfile
-from ..utils import clamp, set_presence_confidence, sorted_list
+from ..utils import clamp, sorted_list
 
 
 def score_games(a: UserProfile, b: UserProfile) -> PairOverlapResult:
@@ -24,16 +24,6 @@ def score_games(a: UserProfile, b: UserProfile) -> PairOverlapResult:
         + len(shared_historical) * GAME_WEIGHTS["historical_overlap"]
     )
     score = clamp(raw_score / GAME_WEIGHTS["normalizer"], 0.0, 1.0)
-    confidence = set_presence_confidence(
-        [
-            (a["games_currently_plays"], b["games_currently_plays"]),
-            (a["games_likes"], b["games_likes"]),
-            (a["games_dislikes"], b["games_dislikes"]),
-            (a["games_used_to_play"], b["games_used_to_play"]),
-            (a["games_open_to_try"], b["games_open_to_try"]),
-            (a["games_wants_to_play"], b["games_wants_to_play"]),
-        ]
-    )
 
     return PairOverlapResult(
         raw_features={
@@ -47,5 +37,4 @@ def score_games(a: UserProfile, b: UserProfile) -> PairOverlapResult:
             "game_total_conflict_count": len(conflicts),
         },
         score=score,
-        confidence=confidence,
     )

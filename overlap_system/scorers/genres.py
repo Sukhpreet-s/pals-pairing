@@ -1,6 +1,6 @@
 from ..config import GENRE_WEIGHTS
 from ..models import PairOverlapResult, UserProfile
-from ..utils import clamp, set_presence_confidence, sorted_list
+from ..utils import clamp, sorted_list
 
 
 def score_genres(a: UserProfile, b: UserProfile) -> PairOverlapResult:
@@ -25,14 +25,6 @@ def score_genres(a: UserProfile, b: UserProfile) -> PairOverlapResult:
         + len(conflicts_avoid) * GENRE_WEIGHTS["avoid_conflict"]
     )
     score = clamp(raw_score / GENRE_WEIGHTS["normalizer"], 0.0, 1.0)
-    confidence = set_presence_confidence(
-        [
-            (a["genres_likes"], b["genres_likes"]),
-            (a["genres_dislikes"], b["genres_dislikes"]),
-            (a["genres_avoids"], b["genres_avoids"]),
-            (a["genres_open_to_try"], b["genres_open_to_try"]),
-        ]
-    )
 
     return PairOverlapResult(
         raw_features={
@@ -42,5 +34,4 @@ def score_genres(a: UserProfile, b: UserProfile) -> PairOverlapResult:
             "genre_conflicts_avoid": sorted_list(conflicts_avoid),
         },
         score=score,
-        confidence=confidence,
     )

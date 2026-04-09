@@ -22,13 +22,6 @@ def score_overlap(a: UserProfile, b: UserProfile) -> AggregateOverlapResult:
         "social": social["score"],
         "personality": personality["score"],
     }
-    domain_confidence = {
-        "games": games["confidence"],
-        "genres": genres["confidence"],
-        "playstyle": playstyle["confidence"],
-        "social": social["confidence"],
-        "personality": personality["confidence"],
-    }
 
     overall_score = (
         DOMAIN_WEIGHTS["games"] * domain_scores["games"]
@@ -49,6 +42,5 @@ def score_overlap(a: UserProfile, b: UserProfile) -> AggregateOverlapResult:
     return AggregateOverlapResult(
         overall_overlap_score=clamp(overall_score, 0.0, 1.0),
         domain_scores=domain_scores,
-        domain_confidence=domain_confidence,
         raw_features=raw_features,
     )

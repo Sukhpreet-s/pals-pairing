@@ -1,6 +1,6 @@
 from ..config import PLAYSTYLE_WEIGHTS
 from ..models import PairOverlapResult, UserProfile
-from ..utils import clamp, field_known_confidence
+from ..utils import clamp
 
 
 def _cooperative_alignment(left: bool | None, right: bool | None) -> float:
@@ -48,15 +48,6 @@ def score_playstyle(a: UserProfile, b: UserProfile) -> PairOverlapResult:
         + PLAYSTYLE_WEIGHTS["casual_chill"] * casual_alignment
     )
     score = clamp((weighted_alignment + 1.0) / 2.0, 0.0, 1.0)
-    confidence = field_known_confidence(
-        [
-            a["playstyle_cooperative"] if b["playstyle_cooperative"] is not None else None,
-            a["playstyle_competitive"] if b["playstyle_competitive"] is not None else None,
-            a["playstyle_casual_chill"]
-            if b["playstyle_casual_chill"] is not None
-            else None,
-        ]
-    )
 
     return PairOverlapResult(
         raw_features={
@@ -77,5 +68,4 @@ def score_playstyle(a: UserProfile, b: UserProfile) -> PairOverlapResult:
             },
         },
         score=score,
-        confidence=confidence,
     )

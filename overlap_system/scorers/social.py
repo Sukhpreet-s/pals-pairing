@@ -1,6 +1,6 @@
 from ..config import SOCIAL_WEIGHTS
 from ..models import PairOverlapResult, UserProfile
-from ..utils import clamp, field_known_confidence
+from ..utils import clamp
 
 
 def _long_term_alignment(left: bool | None, right: bool | None) -> float:
@@ -46,13 +46,6 @@ def score_social(a: UserProfile, b: UserProfile) -> PairOverlapResult:
         + SOCIAL_WEIGHTS["open_to_chat"] * chat_alignment
     )
     score = clamp((weighted_alignment + 1.0) / 2.0, 0.0, 1.0)
-    confidence = field_known_confidence(
-        [
-            a["social_wants_long_term"] if b["social_wants_long_term"] is not None else None,
-            a["social_wants_group"] if b["social_wants_group"] is not None else None,
-            a["social_open_to_chat"] if b["social_open_to_chat"] is not None else None,
-        ]
-    )
 
     return PairOverlapResult(
         raw_features={
@@ -73,5 +66,4 @@ def score_social(a: UserProfile, b: UserProfile) -> PairOverlapResult:
             },
         },
         score=score,
-        confidence=confidence,
     )

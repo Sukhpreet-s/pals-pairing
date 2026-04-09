@@ -18,11 +18,6 @@ def write_pair_overlap_output(
         "playstyle_score",
         "social_score",
         "personality_score",
-        "games_confidence",
-        "genres_confidence",
-        "playstyle_confidence",
-        "social_confidence",
-        "personality_confidence",
         "raw_features_json",
     ]
 
@@ -40,11 +35,6 @@ def write_pair_overlap_output(
                     "playstyle_score": row["domain_scores"]["playstyle"],
                     "social_score": row["domain_scores"]["social"],
                     "personality_score": row["domain_scores"]["personality"],
-                    "games_confidence": row["domain_confidence"]["games"],
-                    "genres_confidence": row["domain_confidence"]["genres"],
-                    "playstyle_confidence": row["domain_confidence"]["playstyle"],
-                    "social_confidence": row["domain_confidence"]["social"],
-                    "personality_confidence": row["domain_confidence"]["personality"],
                     "raw_features_json": json.dumps(row["raw_features"], sort_keys=True),
                 }
             )

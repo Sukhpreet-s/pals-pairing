@@ -1,6 +1,6 @@
 from ..config import PERSONALITY_WEIGHTS
 from ..models import PairOverlapResult, UserProfile
-from ..utils import clamp, field_known_confidence
+from ..utils import clamp
 
 ENERGY_ORDER = {"low": 0, "medium": 1, "high": 2}
 
@@ -54,17 +54,6 @@ def score_personality(a: UserProfile, b: UserProfile) -> PairOverlapResult:
         + PERSONALITY_WEIGHTS["introverted"] * introversion_alignment
     )
     score = clamp(score, 0.0, 1.0)
-    confidence = field_known_confidence(
-        [
-            a["personality_chill"] if b["personality_chill"] is not None else None,
-            a["personality_energy_level"]
-            if b["personality_energy_level"] is not None
-            else None,
-            a["personality_introverted"]
-            if b["personality_introverted"] is not None
-            else None,
-        ]
-    )
 
     return PairOverlapResult(
         raw_features={
@@ -86,5 +75,4 @@ def score_personality(a: UserProfile, b: UserProfile) -> PairOverlapResult:
             },
         },
         score=score,
-        confidence=confidence,
     )
