@@ -5,15 +5,8 @@ from .models import UserProfile
 
 ENERGY_MAP = {
     "low": "low",
-    "calm": "low",
-    "quiet": "low",
-    "reserved": "low",
     "medium": "medium",
-    "mid": "medium",
-    "balanced": "medium",
     "high": "high",
-    "energetic": "high",
-    "loud": "high",
 }
 
 
@@ -33,11 +26,11 @@ def normalize_bool(value: Any) -> bool | None:
         return value
 
     lowered = str(value).strip().lower()
-    if lowered in {"true", "1", "yes", "y"}:
+    if lowered in {"true"}:
         return True
-    if lowered in {"false", "0", "no", "n"}:
+    if lowered in {"false"}:
         return False
-    if lowered in {"null", "none", "", "unknown", "na", "n/a"}:
+    if lowered in {"null"}:
         return None
     return None
 
@@ -46,7 +39,7 @@ def normalize_energy_level(value: str | None) -> str | None:
     if value is None:
         return None
     lowered = str(value).strip().lower()
-    if lowered in {"", "null", "none", "unknown", "na", "n/a"}:
+    if lowered in {"", "null"}:
         return None
     return ENERGY_MAP.get(lowered)
 
