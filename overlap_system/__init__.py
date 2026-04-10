@@ -1,3 +1,3 @@
-from .pipeline import score_all_pairs, score_pair
+from overlap_system.pipeline import score_profiles_pipeline
 
-__all__ = ["score_pair", "score_all_pairs"]
+__all__ = ["score_profiles_pipeline"]

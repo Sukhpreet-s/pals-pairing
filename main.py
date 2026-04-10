@@ -1,7 +1,7 @@
 import argparse
 
 from extraction_pipeline import extract_profiles_pipeline
-from overlap_system.pipeline import score_profiles_pipeline
+from overlap_system import score_profiles_pipeline
 
 
 def run_extraction_pipeline(
