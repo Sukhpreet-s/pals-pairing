@@ -5,6 +5,7 @@ import json
 
 from .normalizers import normalize_user_profile
 from .scorers.aggregate import score_overlap
+from .config import PROFILE_ID_FIELD, PROFILE_ID_FALLBACK_FIELD
 
 
 def score_profiles_pipeline(input_file, output_file):
@@ -23,13 +24,13 @@ def score_profiles_pipeline(input_file, output_file):
         print(f"Not enough extracted rows in {input_file} to score pairs.")
         return
 
-    overlap_rows = score_all_pairs(extracted_rows, id_field="post_id")
+    overlap_rows = score_all_pairs(extracted_rows, id_field=PROFILE_ID_FIELD)
     write_pair_overlap_output(overlap_rows, output_file=output_file)
     print(f"Wrote {len(overlap_rows)} pair overlap rows to {output_file}")
 
 
 def score_all_pairs(
-    rows: list[Mapping[str, Any]], id_field: str = "post_id"
+    rows: list[Mapping[str, Any]], id_field: str = PROFILE_ID_FIELD
 ) -> list[dict[str, Any]]:
     """
     Score all unique pairs of profiles from a list of profile rows.
@@ -45,8 +46,8 @@ def score_all_pairs(
         overlap = score_pair(left, right)
         results.append(
             {
-                "user_a_id": str(left.get(id_field, left.get("id", ""))),
-                "user_b_id": str(right.get(id_field, right.get("id", ""))),
+                "user_a_id": str(left.get(id_field, left.get(PROFILE_ID_FALLBACK_FIELD, ""))),
+                "user_b_id": str(right.get(id_field, right.get(PROFILE_ID_FALLBACK_FIELD, ""))),
                 **overlap,
             }
         )

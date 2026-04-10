@@ -1,6 +1,10 @@
 import csv
 
-from extraction_pipeline.config import PROFILE_FIELDNAMES
+from extraction_pipeline.config import (
+    PROFILE_FIELDNAMES,
+    SOURCE_CSV_ID_COLUMN,
+    SOURCE_CSV_INTRO_COLUMN,
+)
 
 
 def load_source_records(input_file: str, limit: int) -> list[dict[str, str]]:
@@ -13,8 +17,8 @@ def load_source_records(input_file: str, limit: int) -> list[dict[str, str]]:
                 break
             records.append(
                 {
-                    "id": row["id"],
-                    "intro": row["introduction content"],
+                    "id": row[SOURCE_CSV_ID_COLUMN],
+                    "intro": row[SOURCE_CSV_INTRO_COLUMN],
                 }
             )
     return records

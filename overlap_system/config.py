@@ -1,3 +1,7 @@
+# CSV column names
+PROFILE_ID_FIELD = "post_id"
+PROFILE_ID_FALLBACK_FIELD = "id"
+
 DOMAIN_WEIGHTS = {
     "games": 0.40,
     "genres": 0.20,

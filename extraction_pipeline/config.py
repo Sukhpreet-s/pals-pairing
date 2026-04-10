@@ -5,6 +5,10 @@ MODEL = "qwen2.5:3b"
 PROMPT_TYPES = ["games", "genres", "playstyle", "social", "personality"]
 PROMPTS_DIR = Path(__file__).resolve().parent.parent / "prompts"
 
+# Input CSV column names
+SOURCE_CSV_ID_COLUMN = "id"
+SOURCE_CSV_INTRO_COLUMN = "introduction content"
+
 PROFILE_FIELDNAMES = [
     "post_id",
     "games_currently_plays",
