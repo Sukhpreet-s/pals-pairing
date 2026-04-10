@@ -17,7 +17,17 @@ def extract_profiles_pipeline(
     output_file: str = "profile_extraction_output.csv",
     limit: int = 3,
 ) -> list[dict[str, str]]:
-    print("=== Multi-Prompt Profile Extraction Pipeline ===")
+    """
+    Extract player profiles from introduction texts using multi-prompt analysis.
+    
+    Processes each record through 5 prompt types (games, genres, playstyle, social, 
+    personality) and writes results to CSV.
+    
+    @param input_file - Path to input CSV with post IDs and introduction content
+    @param output_file - Path to write extracted profiles CSV
+    @param limit - Maximum number of records to process
+    @returns List of extracted profile rows with all profile fields
+    """
     print(f"Processing first {limit} intro posts through 5 prompt types")
     print(f"Model: {MODEL}\n")
 
@@ -40,7 +50,16 @@ def extract_profiles_pipeline(
 
 
 def process_record(post_id: str, intro_text: str) -> dict[str, str]:
-    """Process a single post through all prompt types to extract profile."""
+    """
+    Process a single post through all prompt types to extract player profile.
+    
+    Handles errors gracefully by using default values if extraction fails for any 
+    prompt type.
+    
+    @param post_id - Unique identifier for the post
+    @param intro_text - User introduction text to extract profile from
+    @returns Profile row with post_id and all extracted profile fields
+    """
     row: dict[str, str] = {"post_id": post_id}
     for prompt_type in PROMPT_TYPES:
         try:
