@@ -1,6 +1,6 @@
 import requests
 
-from extraction_pipeline.config import OLLAMA_URL, MODEL
+from ..config import OLLAMA_URL, MODEL
 
 
 def extract_profile_with_prompt(prompt: str) -> str:

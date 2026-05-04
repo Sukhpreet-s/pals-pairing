@@ -1,24 +1,24 @@
-from extraction_pipeline.parsers.flatteners.flattener import (
+from .flattener import (
     flatten_by_prompt_type,
     default_values_for_prompt,
 )
-from extraction_pipeline.parsers.flatteners.games import (
+from .games import (
     flatten_games,
     default_values_games,
 )
-from extraction_pipeline.parsers.flatteners.genres import (
+from .genres import (
     flatten_genres,
     default_values_genres,
 )
-from extraction_pipeline.parsers.flatteners.playstyle import (
+from .playstyle import (
     flatten_playstyle,
     default_values_playstyle,
 )
-from extraction_pipeline.parsers.flatteners.social import (
+from .social import (
     flatten_social,
     default_values_social,
 )
-from extraction_pipeline.parsers.flatteners.personality import (
+from .personality import (
     flatten_personality,
     default_values_personality,
 )

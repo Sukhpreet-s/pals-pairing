@@ -1,6 +1,6 @@
 import csv
 
-from extraction_pipeline.config import (
+from ..config import (
     PROFILE_FIELDNAMES,
     SOURCE_CSV_ID_COLUMN,
     SOURCE_CSV_INTRO_COLUMN,

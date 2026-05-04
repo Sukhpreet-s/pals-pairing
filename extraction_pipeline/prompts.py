@@ -1,4 +1,4 @@
-from extraction_pipeline.config import PROMPTS_DIR
+from .config import PROMPTS_DIR
 
 
 def load_prompt(prompt_type: str) -> str:

@@ -1,15 +1,17 @@
 """Main extraction pipeline orchestration."""
+
 import json
 
-from extraction_pipeline.config import PROFILE_FIELDNAMES, PROMPT_TYPES, MODEL
-from extraction_pipeline.api import extract_profile_with_prompt
-from extraction_pipeline.parsers import clean_json_output, parse_json
-from extraction_pipeline.parsers.flatteners import (
+from .config import PROFILE_FIELDNAMES, PROMPT_TYPES, MODEL
+from .api import extract_profile_with_prompt
+from .parsers import (
+    clean_json_output,
+    parse_json,
     flatten_by_prompt_type,
     default_values_for_prompt,
 )
-from extraction_pipeline.prompts import load_prompt
-from extraction_pipeline.io import load_source_records, write_profile_rows
+from .prompts import load_prompt
+from .io import load_source_records, write_profile_rows
 
 
 def extract_profiles_pipeline(
@@ -19,10 +21,10 @@ def extract_profiles_pipeline(
 ) -> list[dict[str, str]]:
     """
     Extract player profiles from introduction texts using multi-prompt analysis.
-    
-    Processes each record through 5 prompt types (games, genres, playstyle, social, 
+
+    Processes each record through 5 prompt types (games, genres, playstyle, social,
     personality) and writes results to CSV.
-    
+
     @param input_file - Path to input CSV with post IDs and introduction content
     @param output_file - Path to write extracted profiles CSV
     @param limit - Maximum number of records to process
@@ -52,10 +54,10 @@ def extract_profiles_pipeline(
 def process_record(post_id: str, intro_text: str) -> dict[str, str]:
     """
     Process a single post through all prompt types to extract player profile.
-    
-    Handles errors gracefully by using default values if extraction fails for any 
+
+    Handles errors gracefully by using default values if extraction fails for any
     prompt type.
-    
+
     @param post_id - Unique identifier for the post
     @param intro_text - User introduction text to extract profile from
     @returns Profile row with post_id and all extracted profile fields
@@ -81,4 +83,3 @@ def process_record(post_id: str, intro_text: str) -> dict[str, str]:
             row.update(default_values_for_prompt(prompt_type))
 
     return row
-

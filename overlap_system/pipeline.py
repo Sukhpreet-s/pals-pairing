@@ -4,17 +4,17 @@ import csv
 import json
 
 from .normalizers import normalize_user_profile
-from .scorers.aggregate import score_overlap
+from .scorers import score_overlap
 from .config import PROFILE_ID_FIELD, PROFILE_ID_FALLBACK_FIELD
 
 
 def score_profiles_pipeline(input_file, output_file):
     """
     Score all possible pairs of player profiles for compatibility overlap.
-    
+
     Loads extracted profiles, normalizes them, and computes pairwise overlap scores
     across all profile domains (games, genres, playstyle, social, personality).
-    
+
     @param input_file - Path to extracted profiles CSV from extraction pipeline
     @param output_file - Path to write pair overlap scores CSV
     """
@@ -34,9 +34,9 @@ def score_all_pairs(
 ) -> list[dict[str, Any]]:
     """
     Score all unique pairs of profiles from a list of profile rows.
-    
+
     Generates all combinations of pairs and scores each pair's compatibility overlap.
-    
+
     @param rows - List of profile rows to pair and score
     @param id_field - Field name containing the unique user identifier (default: "post_id")
     @returns List of pair overlap results with user IDs and scores
@@ -46,8 +46,12 @@ def score_all_pairs(
         overlap = score_pair(left, right)
         results.append(
             {
-                "user_a_id": str(left.get(id_field, left.get(PROFILE_ID_FALLBACK_FIELD, ""))),
-                "user_b_id": str(right.get(id_field, right.get(PROFILE_ID_FALLBACK_FIELD, ""))),
+                "user_a_id": str(
+                    left.get(id_field, left.get(PROFILE_ID_FALLBACK_FIELD, ""))
+                ),
+                "user_b_id": str(
+                    right.get(id_field, right.get(PROFILE_ID_FALLBACK_FIELD, ""))
+                ),
                 **overlap,
             }
         )
@@ -57,9 +61,9 @@ def score_all_pairs(
 def score_pair(row_a: Mapping[str, Any], row_b: Mapping[str, Any]) -> dict[str, Any]:
     """
     Score compatibility overlap between two player profiles.
-    
+
     Normalizes both profiles and computes aggregate overlap score across all domains.
-    
+
     @param row_a - First player profile row
     @param row_b - Second player profile row
     @returns Dictionary with overall and domain-specific overlap scores
@@ -74,7 +78,7 @@ def load_extracted_profile_rows(
 ) -> list[dict[str, str]]:
     """
     Load extracted player profiles from CSV file.
-    
+
     @param input_file - Path to extracted profiles CSV
     @returns List of profile dictionaries loaded from CSV
     """
@@ -88,10 +92,10 @@ def write_pair_overlap_output(
 ) -> None:
     """
     Write pair overlap scores to CSV file.
-    
+
     Transforms the overlap result dictionaries into CSV format with domain-specific scores
     and raw features JSON serialization.
-    
+
     @param overlap_rows - List of pair overlap result dictionaries
     @param output_file - Path to write pair overlap scores CSV
     """
@@ -121,6 +125,8 @@ def write_pair_overlap_output(
                     "playstyle_score": row["domain_scores"]["playstyle"],
                     "social_score": row["domain_scores"]["social"],
                     "personality_score": row["domain_scores"]["personality"],
-                    "raw_features_json": json.dumps(row["raw_features"], sort_keys=True),
+                    "raw_features_json": json.dumps(
+                        row["raw_features"], sort_keys=True
+                    ),
                 }
             )
