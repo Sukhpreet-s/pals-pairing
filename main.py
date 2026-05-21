@@ -1,5 +1,6 @@
 import argparse
 
+from logging_config import configure_logging
 from extraction_pipeline import extract_profiles_pipeline
 from overlap_system import score_profiles_pipeline
 
@@ -24,6 +25,19 @@ def build_parser() -> argparse.ArgumentParser:
         description="Run extraction or pair-overlap scoring pipelines."
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
+
+    # Global logging options
+    parser.add_argument(
+        "--log-level",
+        default="INFO",
+        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+        help="Logging level (default: INFO)",
+    )
+    parser.add_argument(
+        "--log-file",
+        default=None,
+        help="Optional log file path (enables file handler with rotation)",
+    )
 
     extract_parser = subparsers.add_parser(
         "extract",
@@ -65,6 +79,10 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main() -> None:
     args = build_parser().parse_args()
+    
+    # Initialize logging based on arguments
+    configure_logging(log_level=args.log_level, log_file=args.log_file)
+    
     if args.command == "extract":
         run_extraction_pipeline(
             input_file=args.input_file,

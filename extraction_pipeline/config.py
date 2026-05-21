@@ -1,8 +1,12 @@
 from pathlib import Path
 
 OLLAMA_URL = "http://localhost:11434/api/generate"
-MODEL = "qwen2.5:3b"
-PROMPT_TYPES = ["games", "genres", "playstyle", "social", "personality"]
+# MODEL = "qwen2.5:3b"
+# MODEL = "hf.co/QuantFactory/Qwen2.5-7B-Instruct-GGUF:Q4_K_M"
+MODEL = "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_XL"
+# MODEL = "hf.co/Qwen/Qwen3-8B-GGUF:Q4_K_M"
+PROMPT_TYPES = ["games"]
+								#"genres", "playstyle", "social", "personality"]
 PROMPTS_DIR = Path(__file__).resolve().parent.parent / "prompts"
 
 # Input CSV column names

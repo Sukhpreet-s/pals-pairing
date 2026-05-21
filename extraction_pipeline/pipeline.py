@@ -1,6 +1,7 @@
 """Main extraction pipeline orchestration."""
 
 import json
+import logging
 
 from .config import PROFILE_FIELDNAMES, PROMPT_TYPES, MODEL
 from .api import extract_profile_with_prompt
@@ -12,6 +13,8 @@ from .parsers import (
 )
 from .prompts import load_prompt
 from .io import load_source_records, write_profile_rows
+
+logger = logging.getLogger(__name__)
 
 
 def extract_profiles_pipeline(
@@ -65,21 +68,48 @@ def process_record(post_id: str, intro_text: str) -> dict[str, str]:
     row: dict[str, str] = {"post_id": post_id}
     for prompt_type in PROMPT_TYPES:
         try:
+            logger.debug("Extracting profile", extra={"prompt_type": prompt_type})
+
             prompt_template = load_prompt(prompt_type)
+            logger.debug("Loaded prompt template", extra={"length": len(prompt_template)})
+
             full_prompt = prompt_template.replace("{USER_TEXT}", intro_text)
-            print(f"  Processing {prompt_type}...")
+            logger.debug("Generated full prompt", extra={"length": len(full_prompt)})
+            
+            logger.info(f"Processing {prompt_type} for post {post_id}")
 
             raw_response = extract_profile_with_prompt(full_prompt)
+            logger.debug("Raw response", extra={"length": len(raw_response)})
+
             cleaned = clean_json_output(raw_response)
+            logger.debug("Cleaned JSON", extra={"length": len(cleaned), "content": cleaned[:200]})
+
             parsed = parse_json(cleaned)
-            row.update(flatten_by_prompt_type(prompt_type, parsed))
+            logger.debug(
+                "JSON parsed",
+                extra={"keys": list(parsed.keys())[:10]}
+            )
+
+            flattened = flatten_by_prompt_type(prompt_type, parsed)
+            logger.debug(
+                "Flattened result",
+                extra={"fields": list(flattened.keys())}
+            )
+
+            row.update(flattened)
 
         except json.JSONDecodeError as error:
-            print(f"  ERROR: JSON parse error for {prompt_type}: {error}")
+            logger.error(
+                f"JSON parse error for {prompt_type} on post {post_id}: {error}",
+                exc_info=True,
+            )
             row.update(default_values_for_prompt(prompt_type))
 
         except Exception as error:
-            print(f"  ERROR: Unexpected error for {prompt_type}: {error}")
+            logger.error(
+                f"Unexpected error for {prompt_type} on post {post_id}: {error}",
+                exc_info=True,
+            )
             row.update(default_values_for_prompt(prompt_type))
 
     return row
