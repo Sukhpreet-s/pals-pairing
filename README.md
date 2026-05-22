@@ -4,7 +4,7 @@
 
 #### 1.1 Overview
 
-This project addresses the problem of matching gamers based on rich, free‑form introduction posts rather than simple checklists or single‑dimension tags. The source data comes from the GamerPals Discord community, where users introduce themselves in open‑ended messages that mention games, genres, playstyle, social expectations, and personality traits.
+This project addresses the problem of matching gamers based on rich, free‑form introduction posts rather than simple checklists or single‑dimension tags. The source data comes from the GamerPals Discord community, where users introduce themselves in open‑ended messages that can include games, genres, playstyle, social expectations, and personality traits.
 
 The core goal is to build a system that:
 - extracts structured preference data from free‑form intros
