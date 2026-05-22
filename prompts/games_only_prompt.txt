@@ -11,8 +11,8 @@ Return ONLY valid JSON as per the following structure:
 }
 
 Follow all these rules strictly:
+- If abbreviated names are used for games, use the full name instead. 
 - Include only explicitly mentioned games
-- Use the exact game name as written when possible
 - If the user says they do not like or do not play a game, mark it as dislikes or avoids
 - If they used to play it, mark used_to_play
 - If they are willing to try it, mark open_to_try
